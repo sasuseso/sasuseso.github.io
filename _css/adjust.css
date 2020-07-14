@@ -73,3 +73,13 @@
 @media (min-width: 1000px) {
     .franklin-content {width: 660px;}
 }
+
+.contactme {
+    color : #b0c4de;
+    font-style : normal;
+    border : none;
+}
+
+.recentblogposts {
+    border : none;
+}
