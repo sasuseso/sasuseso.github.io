@@ -1,5 +1,8 @@
 @def title = "Main"
+@def fd_tag = "MAIN"
 
 Home
 ====
-{{ recentblogposts }}
+- tag tag [`tag`](/tag/tag)
+{{ getalltags }}
+<!--{{ recentblogposts }}-->

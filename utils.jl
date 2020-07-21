@@ -53,3 +53,39 @@ function hfun_gettags(fi)
         ""
     end
 end
+
+function hfun_getalltags()
+    list = readdir("blog")
+    filter!(f -> endswith(f, ".md"), list)
+    dates = [stat(joinpath("blog", f)).mtime for f in list]
+    perm = sortperm(dates, rev = true)
+    idxs = perm[1:min(3, length(perm))]
+    io = IOBuffer()
+    write(io, "\n")
+
+    tags_count = Dict{String,Int}()
+    for (k, i) in enumerate(idxs)
+        fi = "blog/" * splitext(list[i])[1]
+        tags = pagevar(fi, "tags")
+        @show fi tags
+
+
+        for t in tags
+            if haskey(tags_count, t)
+                tags_count[t] += 1
+            else
+                push!(tags_count, t => 1)
+            end
+            @show t
+        end
+    end
+    @show tags_count
+
+    write(io, "<ul>\n")
+    for t in tags_count
+        write(io, """<li>$(t.first): $(t.second)</li>\n""")
+    end
+    write(io, "</ul>\n")
+    write(io, "\n")
+    return String(take!(io))
+end
