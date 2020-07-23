@@ -29,13 +29,12 @@ function hfun_recentblogposts()
     write(io, "<ul style=\"list-style : none;\">\n")
     for (k, i) in enumerate(idxs)
         fi = "blog/" * splitext(list[i])[1] * "/"
-        @show fi
+        title = pagevar(fi[begin:end-1], "title")
         write(
             io,
             """<li>
-            <a href="$fi">$(pagevar(fi[begin:end-1], "title"))</a>
+            <a href="$fi">"$(title == nothing ? "" : title)"</a>
             $(Dates.format(Dates.unix2datetime(stat(joinpath("blog", list[i])).mtime), "yyyy-mm-dd"))
-            $(let; str=""; for t in hfun_gettags(fi);str * t;end;str end)
             <div>$((pagevar(fi[begin:end-1], "desc") != nothing) ? pagevar(fi[begin:end-1], "desc") : "")</div>
             </li>\n""",
         )
@@ -43,15 +42,6 @@ function hfun_recentblogposts()
     write(io, "</ul>\n")
     write(io, "\n")
     return String(take!(io))
-end
-
-function hfun_gettags(fi)
-    tags = pagevar(fi[begin:(end - 1)], "tags")
-    if tags != nothing
-        length(tags) == 0 ? "" : split(tags, ",")
-    else
-        ""
-    end
 end
 
 function hfun_getalltags()
@@ -67,7 +57,6 @@ function hfun_getalltags()
     for (k, i) in enumerate(idxs)
         fi = "blog/" * splitext(list[i])[1]
         tags = pagevar(fi, "tags")
-        @show fi tags
 
 
         for t in tags
@@ -76,14 +65,15 @@ function hfun_getalltags()
             else
                 push!(tags_count, t => 1)
             end
-            @show t
         end
     end
-    @show tags_count
 
-    write(io, "<ul>\n")
+    write(io, """<ul class="tag_counter" style=\"list-style : none;\">\n""")
     for t in tags_count
-        write(io, """<li>$(t.first): $(t.second)</li>\n""")
+        write(
+            io,
+            """<li><a href="/tag/$(t.first)">$(t.first)</a>: $(t.second)</li>\n""",
+        )
     end
     write(io, "</ul>\n")
     write(io, "\n")
