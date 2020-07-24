@@ -2,4 +2,4 @@
 
 All Posts
 =========
-{{ recentblogposts }}
+{{ getallposts }}
