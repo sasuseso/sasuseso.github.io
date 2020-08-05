@@ -224,5 +224,62 @@ foo(x::Real) = ...
 fields with abstract containers][2])
 
 
+型とインスタンスの混同を避ける
+------------------------------
+
+以下の様な関数宣言は混同しやすくなります｡
+
+```julia
+foo(::Type{MyType}) = ...
+foo(::MyType) = foo(MyType)
+```
+
+`MyType`と`MyType()`の違いに注意しましょう｡  
+
+インスタンスの利用を優先的に考えましょう｡`Type{MyType}`の利用はその後必要があれ
+ば考えるようにします｡
+
+
+マクロを濫用しない
+------------------
+
+マクロ内で`eval`を呼ぶような記述があれば注意が必要です｡この様なマクロは
+top-levelスコープで呼ばれたときに作用します｡この様なマクロを関数に書き換えると
+自然に実行時に変化する値に自然にアクセスできます｡
+
+
+インタフェースレベルでunsafeな操作を記述しない
+---------------------------------------------
+
+```julia
+mutable struct NativeType
+    p::Ptr{UInt8}
+    ...
+end
+```
+
+この様な型に対して以下のようなメソッドを書くのは危険です｡
+
+```julia
+getindex(x::NativeType, i) = unsafe_load(x.p, i)
+```
+
+問題はユーザーがそれと知らずに`x[i]`の様な記述でunsafeな操作実行する可能性があ
+ることです｡  
+
+この様な関数は操作が安全だと検証するか,関数名にunsafeを含む必要があります｡
+
+baseのコンテナ型に対してメソッドを追加しない
+-------------------------------------------
+
+```julia
+show(io::IO, v::Vector{MyType} = ...
+```
+
+この様な記述は可能ですが混乱を招きます｡ユーザーは`Vector()`のようなよく知られた
+型に対しては,いつも変わらない動作を期待しているため,過ぎたカスタマイズは使いに
+くくなります｡
+
+
 [1]: https://docs.julialang.org/en/v1/base/numbers/#Base.MathConstants.pi
 [2]: https://docs.julialang.org/en/v1/manual/performance-tips/#Avoid-fields-with-abstract-containers-1
