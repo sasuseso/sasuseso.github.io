@@ -2,5 +2,3 @@
 
 Home
 ====
-- tag tag [`tag`](/tag/tag)
-{{ recentblogposts }}
