@@ -29,7 +29,7 @@ function hfun_recentblogposts()
     write(io, "<ul style=\"list-style : none;\">\n")
     for (k, i) in enumerate(idxs)
         fi = "blog/" * splitext(list[i])[1] * "/"
-        title = pagevar(fi[begin:end-1], "title")
+        title = pagevar(fi[begin:(end - 1)], "title")
         write(
             io,
             """<li>
@@ -70,12 +70,34 @@ function hfun_getalltags()
 
     write(io, """<ul class="tag_counter" style=\"list-style : none;\">\n""")
     for t in tags_count
-        write(
-            io,
-            """<li><a href="/tag/$(t.first)">$(t.first)</a>: $(t.second)</li>\n""",
-        )
+        write(io, """<li><a href="/tag/$(t.first)">$(t.first)</a>: $(t.second)</li>\n""")
     end
     write(io, "</ul>\n")
     write(io, "\n")
+    return String(take!(io))
+end
+
+function hfun_getallposts()
+    years = filter(x -> isdir(joinpath("blog", x)), readdir("blog"))
+    @show years
+    io = IOBuffer()
+    write(io, "\n<ul>\n")
+    for y in years
+        write(io, "<li>$y\n")
+        write(io, "<ul>\n")
+        for post in sort!(readdir("blog/$y"); by = x -> stat(x).mtime)
+            write(
+                io,
+                """<li>
+            <a href="/blog/$y/$post">$post</a>
+            ($(Dates.format(Dates.unix2datetime(stat(joinpath("blog", y, post)).mtime), "yyyy-mm-dd")))
+            </li>\n""",
+            )
+        end
+        write(io, "</ul>\n")
+        write(io, "</li>\n")
+    end
+    write(io, "</ul>\n")
+
     return String(take!(io))
 end
