@@ -7,9 +7,32 @@ ex = <span class=hljs-meta >@macroexpand</span> <span class=hljs-meta >@match</s
 <span class=hljs-keyword >end</span>
 <span class=hljs-meta >@show</span> ex
 print(<span class=hljs-string >&quot;\n\nmatch result: \n\t&quot;</span>)
-eval(ex)</code></pre> <pre><code class="plaintext hljs">ArgumentError: Package Match not found in current path:
-- Run `import Pkg; Pkg.add(&quot;Match&quot;)` to install the Match package.
+eval(ex)</code></pre> <pre><code class="plaintext hljs">ex = quote
+    #= none:2 =#
+    if Match.ismatch(1, t)
+        #= /home/runner/.julia/packages/Match/qiTCM/src/matchmacro.jl:408 =#
+        println(&quot;mached 1&quot;)
+    else
+        #= /home/runner/.julia/packages/Match/qiTCM/src/matchmacro.jl:410 =#
+        begin
+            #= none:3 =#
+            if Match.ismatch(2, t)
+                #= /home/runner/.julia/packages/Match/qiTCM/src/matchmacro.jl:408 =#
+                println(&quot;mached 2&quot;)
+            else
+                #= /home/runner/.julia/packages/Match/qiTCM/src/matchmacro.jl:410 =#
+                begin
+                    #= none:4 =#
+                    println(&quot;something else&quot;)
+                end
+            end
+        end
+    end
+end
 
+
+match result: 
+	mached 1
 </code></pre> <p><code>macroexpand</code>マクロを使うとたしかにif-else文を生成していることが分かります｡ </p> <p>型や範囲にマッチするなど高度な使い方もできます｡詳しくは<a href="http://kmsquire.github.io/Match.jl/latest/">パッケージのドキュメント</a> を参照してください｡またこちらのパッケージは現在メンテナンスがされていないようです｡</p> <h2>Singlton Type Pattern</h2> <p>シングルトン型とJuliaのマルチディスパッチを使ってパターンマッチができます｡ シングルトン型とはインスタンスを一つしか持たない型のことです｡&#40;オブジェクト指向 ではクラスのインスタンス&#41; </p> <p>ここではこの性質を利用して,シングルトン型を引数に取る メソッドを定義し,Juliaのマルチディスパッチを使ってパターンマッチを実現します｡ JuliaにはBaseに<a href="https://docs.julialang.org/en/v1/base/base/#Base.Val">Val</a>型というシングルトン型を扱うためのユーティリティがあります｡</p> <pre><code class="julia hljs">v1 = <span class=hljs-built_in >Val</span>(<span class=hljs-number >1</span>) <span class=hljs-comment ># Val{1}()</span>
 v2 = <span class=hljs-built_in >Val</span>(<span class=hljs-number >2</span>) <span class=hljs-comment ># Val{2}()</span>
 <span class=hljs-meta >@assert</span> typeof(v1) != typeof(v2)
@@ -36,27 +59,24 @@ end</code></pre> <p>マッチの腕となる<code>Val&#123;T&#125;</code>を取�
     _ =&gt; println(<span class=hljs-string >&quot;else&quot;</span>)
 <span class=hljs-keyword >end</span>)
 
-methods(Machers.macher)</code></pre> <pre><code class="plaintext hljs">LoadError: ArgumentError: Package BenchmarkTools not found in current path:
-- Run `import Pkg; Pkg.add(&quot;BenchmarkTools&quot;)` to install the BenchmarkTools package.
-
-in expression starting at /home/runner/work/sasuseso.github.io/sasuseso.github.io/blog/2020/julia_match/singleton_matcher.jl:2
-</code></pre> <p><code>methods</code>の出力で分かるとおり,複数の<code>macher</code>が腕に記述した文字から生成したシン グルトン型を引数に取る様に宣言されています｡<code>singleton_macher</code>マクロの最後の行で <code>macher</code>を呼び出す<code>Expr</code>を返し,呼び出し元で評価されるとディスパッチが行われ適切 な<code>macher</code>が呼ばれます｡</p> <h2>ベンチマーク</h2> <p>Match.jlの<code>match</code>マクロとの比較です｡</p> <p>Singlton type</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> BenchmarkTools, Match
+methods(Machers.macher)</code></pre> <pre><code class="plaintext hljs">0x62
+# 3 methods for generic function &quot;macher&quot;:
+[1] macher(::Val{:b}) in Main.FD_SANDBOX_99623291670939655.Machers at /home/runner/work/sasuseso.github.io/sasuseso.github.io/blog/2020/julia_match/singleton_matcher.jl:18
+[2] macher(::Val{:a}) in Main.FD_SANDBOX_99623291670939655.Machers at /home/runner/work/sasuseso.github.io/sasuseso.github.io/blog/2020/julia_match/singleton_matcher.jl:18
+[3] macher(v::Val) in Main.FD_SANDBOX_99623291670939655.Machers at /home/runner/work/sasuseso.github.io/sasuseso.github.io/blog/2020/julia_match/singleton_matcher.jl:15</code></pre> <p><code>methods</code>の出力で分かるとおり,複数の<code>macher</code>が腕に記述した文字から生成したシン グルトン型を引数に取る様に宣言されています｡<code>singleton_macher</code>マクロの最後の行で <code>macher</code>を呼び出す<code>Expr</code>を返し,呼び出し元で評価されるとディスパッチが行われ適切 な<code>macher</code>が呼ばれます｡</p> <h2>ベンチマーク</h2> <p>Match.jlの<code>match</code>マクロとの比較です｡</p> <p>Singlton type</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> BenchmarkTools, Match
 <span class=hljs-meta >@btime</span> Machers.<span class=hljs-meta >@singleton_macher</span> <span class=hljs-string >&quot;t1LilSmM&quot;</span> <span class=hljs-keyword >begin</span>
     <span class=hljs-string >&quot;hIOtXvKt&quot;</span> =&gt; <span class=hljs-number >0x5df0cb0a9308e200</span>
     <span class=hljs-comment ># 中略</span>
     <span class=hljs-string >&quot;t1LilSmM&quot;</span> =&gt; <span class=hljs-number >0x7b4ba8f7d284fafd</span>
     _ =&gt; println(<span class=hljs-string >&quot;no maching string&quot;</span>)
-<span class=hljs-keyword >end</span></code></pre> <pre><code class="plaintext hljs">ArgumentError: Package BenchmarkTools not found in current path:
-- Run `import Pkg; Pkg.add(&quot;BenchmarkTools&quot;)` to install the BenchmarkTools package.
-
-</code></pre> <p>Match.jl</p> <pre><code class="julia hljs"><span class=hljs-meta >@btime</span> <span class=hljs-meta >@match</span> <span class=hljs-string >&quot;t1LilSmM&quot;</span> <span class=hljs-keyword >begin</span>
+<span class=hljs-keyword >end</span></code></pre> <pre><code class="plaintext hljs">  0.001 ns (0 allocations: 0 bytes)
+0x7b4ba8f7d284fafd</code></pre> <p>Match.jl</p> <pre><code class="julia hljs"><span class=hljs-meta >@btime</span> <span class=hljs-meta >@match</span> <span class=hljs-string >&quot;t1LilSmM&quot;</span> <span class=hljs-keyword >begin</span>
     <span class=hljs-string >&quot;hIOtXvKt&quot;</span> =&gt; <span class=hljs-number >0x5df0cb0a9308e200</span>
     <span class=hljs-comment ># 中略</span>
     <span class=hljs-string >&quot;t1LilSmM&quot;</span> =&gt; <span class=hljs-number >0x7b4ba8f7d284fafd</span>
     _ =&gt; println(<span class=hljs-string >&quot;no maching string&quot;</span>)
-<span class=hljs-keyword >end</span></code></pre> <pre><code class="plaintext hljs">LoadError: UndefVarError: @btime not defined
-in expression starting at none:1
-</code></pre> <p>圧倒的な速さですがMatch.jlはかなりリッチなパターンマッチ構文をサポートしている ので,コード生成のオーバーヘッドを考慮する必要がありそうです｡</p> <p><code>@macroexpand</code>でコード生成のオーバーヘッドを排除しようと試みたもの｡</p> <p>Singlton type</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> BenchmarkTools, Match
+<span class=hljs-keyword >end</span></code></pre> <pre><code class="plaintext hljs">  482.574 ns (0 allocations: 0 bytes)
+0x7b4ba8f7d284fafd</code></pre> <p>圧倒的な速さですがMatch.jlはかなりリッチなパターンマッチ構文をサポートしている ので,コード生成のオーバーヘッドを考慮する必要がありそうです｡</p> <p><code>@macroexpand</code>でコード生成のオーバーヘッドを排除しようと試みたもの｡</p> <p>Singlton type</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> BenchmarkTools, Match
 include(<span class=hljs-string >&quot;./blog/2020/julia_match/singleton_matcher.jl&quot;</span>)
 ex = <span class=hljs-meta >@macroexpand</span> Machers.<span class=hljs-meta >@singleton_macher</span> <span class=hljs-string >&quot;t1LilSmM&quot;</span> <span class=hljs-keyword >begin</span>
     <span class=hljs-string >&quot;hIOtXvKt&quot;</span> =&gt; <span class=hljs-number >0x5df0cb0a9308e200</span>
@@ -65,15 +85,12 @@ ex = <span class=hljs-meta >@macroexpand</span> Machers.<span class=hljs-meta >@
     _ =&gt; println(<span class=hljs-string >&quot;no maching string&quot;</span>)
 <span class=hljs-keyword >end</span>
 
-<span class=hljs-meta >@btime</span> $ex</code></pre> <pre><code class="plaintext hljs">ArgumentError: Package BenchmarkTools not found in current path:
-- Run `import Pkg; Pkg.add(&quot;BenchmarkTools&quot;)` to install the BenchmarkTools package.
-
-</code></pre> <p>Match.jl</p> <pre><code class="julia hljs">ex = <span class=hljs-meta >@macroexpand</span> <span class=hljs-meta >@match</span> <span class=hljs-string >&quot;t1LilSmM&quot;</span> <span class=hljs-keyword >begin</span>
+<span class=hljs-meta >@btime</span> $ex</code></pre> <pre><code class="plaintext hljs">  0.001 ns (0 allocations: 0 bytes)
+0x7b4ba8f7d284fafd</code></pre> <p>Match.jl</p> <pre><code class="julia hljs">ex = <span class=hljs-meta >@macroexpand</span> <span class=hljs-meta >@match</span> <span class=hljs-string >&quot;t1LilSmM&quot;</span> <span class=hljs-keyword >begin</span>
     <span class=hljs-string >&quot;hIOtXvKt&quot;</span> =&gt; <span class=hljs-number >0x5df0cb0a9308e200</span>
     <span class=hljs-comment ># 中略</span>
     <span class=hljs-string >&quot;t1LilSmM&quot;</span> =&gt; <span class=hljs-number >0x7b4ba8f7d284fafd</span>
     _ =&gt; println(<span class=hljs-string >&quot;no maching string&quot;</span>)
 <span class=hljs-keyword >end</span>
-<span class=hljs-meta >@btime</span> $ex</code></pre> <pre><code class="plaintext hljs">LoadError: UndefVarError: @match not defined
-in expression starting at none:1
-</code></pre> <p>コード生成のハンディを考慮してもif-elseよりJuliaの動的ディスパッチの方が速そうですね｡</p> <p></p> <div class=page-foot > <div class=contactme > <a href="https://twitter.com/_sasuseso">Twitter</a> / <a href="https://github.com/sasuseso">GitHub</a> </div> <div class=copyright > &copy; sasuseso. Last modified: September 14, 2020. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>. </div> </div> </div> </div> </div>
+<span class=hljs-meta >@btime</span> $ex</code></pre> <pre><code class="plaintext hljs">  19.759 ns (1 allocation: 16 bytes)
+0x7b4ba8f7d284fafd</code></pre> <p>コード生成のハンディを考慮してもif-elseよりJuliaの動的ディスパッチの方が速そうですね｡</p> <p></p> <div class=page-foot > <div class=contactme > <a href="https://twitter.com/_sasuseso">Twitter</a> / <a href="https://github.com/sasuseso">GitHub</a> </div> <div class=copyright > &copy; sasuseso. Last modified: September 14, 2020. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>. </div> </div> </div> </div> </div>

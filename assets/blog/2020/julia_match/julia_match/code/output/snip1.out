@@ -1,3 +1,26 @@
-ArgumentError: Package Match not found in current path:
-- Run `import Pkg; Pkg.add("Match")` to install the Match package.
+ex = quote
+    #= none:2 =#
+    if Match.ismatch(1, t)
+        #= /home/runner/.julia/packages/Match/qiTCM/src/matchmacro.jl:408 =#
+        println("mached 1")
+    else
+        #= /home/runner/.julia/packages/Match/qiTCM/src/matchmacro.jl:410 =#
+        begin
+            #= none:3 =#
+            if Match.ismatch(2, t)
+                #= /home/runner/.julia/packages/Match/qiTCM/src/matchmacro.jl:408 =#
+                println("mached 2")
+            else
+                #= /home/runner/.julia/packages/Match/qiTCM/src/matchmacro.jl:410 =#
+                begin
+                    #= none:4 =#
+                    println("something else")
+                end
+            end
+        end
+    end
+end
 
+
+match result: 
+	mached 1

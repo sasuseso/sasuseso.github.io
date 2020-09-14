@@ -1,2 +1,1 @@
-LoadError: UndefVarError: @match not defined
-in expression starting at none:1
+  19.759 ns (1 allocation: 16 bytes)

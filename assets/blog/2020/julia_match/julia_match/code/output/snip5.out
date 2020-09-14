@@ -1,4 +1,1 @@
-LoadError: ArgumentError: Package BenchmarkTools not found in current path:
-- Run `import Pkg; Pkg.add("BenchmarkTools")` to install the BenchmarkTools package.
-
-in expression starting at /home/runner/work/sasuseso.github.io/sasuseso.github.io/blog/2020/julia_match/singleton_matcher.jl:2
+0x62
