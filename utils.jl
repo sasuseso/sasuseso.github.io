@@ -103,3 +103,12 @@ function hfun_getallposts()
 
     return String(take!(io))
 end
+
+function hfun_fold(param)
+    return """
+    <details>
+        <summary>$(param[1])</summary>
+        <p>$(param[2])</p>
+    </details>
+    """
+end
