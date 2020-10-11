@@ -37,8 +37,9 @@ For instance:
 @@
 }
 
-\newcommand{\theorem}[4]{
+\newcommand{\theorem}[3]{
 @@theorem
+\label{#1}
 **Theorem**: (_!#1_)\\
 #2
 ~~~<details>~~~
