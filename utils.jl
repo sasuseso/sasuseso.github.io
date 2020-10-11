@@ -103,3 +103,10 @@ function hfun_getallposts()
 
     return String(take!(io))
 end
+
+function hfun_test1(vname)
+    """
+    <h1>$(vname[1])</h1>
+    <h1>$(vname[2])</h1>
+    """
+end
