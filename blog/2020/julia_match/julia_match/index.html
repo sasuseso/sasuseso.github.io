@@ -75,7 +75,7 @@ methods(Machers.macher)</code></pre> <pre><code class="plaintext hljs">0x62
     <span class=hljs-comment ># 中略</span>
     <span class=hljs-string >&quot;t1LilSmM&quot;</span> =&gt; <span class=hljs-number >0x7b4ba8f7d284fafd</span>
     _ =&gt; println(<span class=hljs-string >&quot;no maching string&quot;</span>)
-<span class=hljs-keyword >end</span></code></pre> <pre><code class="plaintext hljs">  559.140 ns (0 allocations: 0 bytes)
+<span class=hljs-keyword >end</span></code></pre> <pre><code class="plaintext hljs">  362.684 ns (0 allocations: 0 bytes)
 0x7b4ba8f7d284fafd</code></pre> <p>圧倒的な速さですがMatch.jlはかなりリッチなパターンマッチ構文をサポートしている ので,コード生成のオーバーヘッドを考慮する必要がありそうです｡</p> <p><code>@macroexpand</code>でコード生成のオーバーヘッドを排除しようと試みたもの｡</p> <p>Singlton type</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> BenchmarkTools, Match
 include(<span class=hljs-string >&quot;./blog/2020/julia_match/singleton_matcher.jl&quot;</span>)
 ex = <span class=hljs-meta >@macroexpand</span> Machers.<span class=hljs-meta >@singleton_macher</span> <span class=hljs-string >&quot;t1LilSmM&quot;</span> <span class=hljs-keyword >begin</span>
@@ -92,5 +92,5 @@ ex = <span class=hljs-meta >@macroexpand</span> Machers.<span class=hljs-meta >@
     <span class=hljs-string >&quot;t1LilSmM&quot;</span> =&gt; <span class=hljs-number >0x7b4ba8f7d284fafd</span>
     _ =&gt; println(<span class=hljs-string >&quot;no maching string&quot;</span>)
 <span class=hljs-keyword >end</span>
-<span class=hljs-meta >@btime</span> $ex</code></pre> <pre><code class="plaintext hljs">  20.562 ns (1 allocation: 16 bytes)
+<span class=hljs-meta >@btime</span> $ex</code></pre> <pre><code class="plaintext hljs">  15.331 ns (1 allocation: 16 bytes)
 0x7b4ba8f7d284fafd</code></pre> <p>コード生成のハンディを考慮してもif-elseよりJuliaの動的ディスパッチの方が速そうですね｡</p> <p></p> <div class=page-foot > <div class=contactme > <a href="https://twitter.com/_sasuseso">Twitter</a> / <a href="https://github.com/sasuseso">GitHub</a> </div> <div class=copyright > &copy; sasuseso. Last modified: October 11, 2020. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a>. </div> </div> </div> </div> </div>
