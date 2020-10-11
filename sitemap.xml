@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+<url>
+    <loc>https://sasuseso.github.io/blog/2020/keyboard_memo/keyboard_memo/index.html</loc>
+    <lastmod>2020-10-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://sasuseso.github.io/tags/index.html</loc>
+    <lastmod>2020-10-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://sasuseso.github.io/blog/2020/julia_style_guide_ja/julia_style_guide_ja/index.html</loc>
+    <lastmod>2020-10-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://sasuseso.github.io/blog/2020/first_post/first_post/index.html</loc>
+    <lastmod>2020-10-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://sasuseso.github.io/blog/2020/julia_match/julia_match/index.html</loc>
+    <lastmod>2020-10-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://sasuseso.github.io/blog/posts/index.html</loc>
+    <lastmod>2020-10-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+</urlset>
