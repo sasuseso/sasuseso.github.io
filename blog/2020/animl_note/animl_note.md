@@ -42,21 +42,21 @@ truth-table is
 }
 
 \definition{operator implies}{
-Let $\implies$ to be
-$$ (\alpha \implies \beta) =_{df} (\lnot \alpha \lor \lnot \beta)$$
+Let $\longrightarrow$ to be
+$$ (\alpha \longrightarrow \beta) =_{df} (\lnot \alpha \lor \lnot \beta)$$
 
 truth-table is
 
-| $\implies$ |  1  |  0  |
-| :--------: | :-: | :-: |
-|     1      |  1  |  0  |
-|     0      |  1  |  1  |
+| $\longrightarrow$ |  1  |  0  |
+| :---------------: | :-: | :-: |
+|         1         |  1  |  0  |
+|         0         |  1  |  1  |
 
 }
 
 \definition{operator iff sign}{
 Let $\equiv$ to be
-$$(\alpha \equiv \beta) =_{df} ((\alpha \implies \beta) \lor (\beta \implies \alpha))$$
+$$(\alpha \equiv \beta) =_{df} ((\alpha \longrightarrow \beta) \lor (\beta \longrightarrow \alpha))$$
 
 truth-table is
 
@@ -64,5 +64,42 @@ truth-table is
 | :------: | :-: | :-: |
 |    1     |  1  |  0  |
 |    0     |  0  |  1  |
+
+}
+
+\definition{primitive operator necessity}{
+Let $L \alpha$ to be mean "must be $\alpha$".
+}
+
+\definition{operator possibility}{
+Let $M \alpha$ to be mean "possibly $\alpha$".
+}
+
+The language of propositional modal logic(PML) consist of aforementioned operator
+and brackets and infinity number of letters($p$, $q$, $r$...).
+
+\definition{formation rules of PML}{
+FR1: A propositional variable is a wff.\\
+FR2: If $\alpha$ is a wff, so are $\lnot \alpha$ and $L \alpha$.\\
+FR3: If $\alpha$ and $\beta$ are wff, so is $(\alpha \lor \beta)$.
+}
+
+\definition{K system}{
+Define K system's axioms as all wff satisfying following conditions.\\
+
+PC: If $\alpha$ is a valid wff of PC, then $\alpha$ is an axiom.\\
+
+K: $L(p \longrightarrow q) \longrightarrow (L p \longrightarrow L q)$\\
+
+And its transformation rules are following.
+
+US(_Uniform Substituation_): The the result of uniformly replacing any variable
+or variables $p_1$, $p_2$, $p_3$,... in the theorem by any wff $\beta_1$,
+$\beta_2$, $\beta_3$,... is respectively is itself a theorem.
+
+MP(_Modus Ponens_ or _Detachment_): If $\alpha$ and $\alpha \longrightarrow
+\beta$ are theorems, so is $\beta$.
+
+N(_Necessitation_): If $\alpha$ is a theorem, so is $L\alpha$.
 
 }
