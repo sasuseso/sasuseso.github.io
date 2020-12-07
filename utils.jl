@@ -103,3 +103,8 @@ function hfun_getallposts()
 
     return String(take!(io))
 end
+
+function new_post(name::String)
+    mkdir("blog/2020/$name")
+    touch("blog/2020/$name/$name.md")
+end

@@ -42,7 +42,7 @@ For instance:
 **Theorem**: (_!#1_)\\
 #2
 
-```<details>~~~
+~~~<details>~~~
 ~~~<summary>~~~
 **Proof**
 ~~~</summary>~~~
@@ -50,4 +50,3 @@ For instance:
 ~~~</details>~~~
 @@
 }
-```
