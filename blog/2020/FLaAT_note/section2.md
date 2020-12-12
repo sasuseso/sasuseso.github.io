@@ -200,3 +200,7 @@ Let $M_2 = \{\{Q\times\Delta\},\Sigma,\Delta,\delta',\lambda',[q_0,b_0]\}$ where
 - $\lambda([q,b]) = b$
 by induction
 }
+
+# Equivalence of two automata
+1. When two FAs accept same set of strings over $\Sigma$ they are equivalent.
+2. If two FAs are not equivalent, there are exists string $w$(over $\Sigma$) that one FA accepts and one not.

@@ -5,3 +5,4 @@
 
 - 一章 [Mathematical Preliminaries and Formal Languages](/blog/2020/FLaAT_note/section1)
 - 二章 [Finite Automata](/blog/2020/FLaAT_note/section2)
+- 三章 [Regular Expression and Reqular Grammers](/blog/2020/FLaAT_note/section3)
